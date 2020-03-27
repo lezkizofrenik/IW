@@ -1,0 +1,85 @@
+.login{
+    background-color: #eaeaea;
+}
+
+[part~="navbar"]{     background-color: red; }
+
+vaadin-app-layout{
+	--vaadin-app-layout-drawer-overlay: false !important;	
+}
+.vertical{
+    align-items: center;
+    margin-top: 10%;
+}
+
+.font{
+    color: #343434;
+}
+
+.img{
+    width: 40%;
+    align-self: center;
+    margin-bottom: 10%;
+    margin-top: 20%;
+    filter: opacity(80%);
+}
+
+.imgLogin{
+    filter: opacity(80%);
+}
+
+.paymentSpan{
+	margin-left:30%;
+}
+.layout{
+    width: 90%;
+    align-self: center;
+    align-items: center;
+}
+
+.layout2{
+    width: 90%;
+    align-self: center;
+}
+
+
+.bar{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    overflow:auto;
+	width: 223px;
+
+}
+
+.loginForm{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    border-radius: 3%;
+}
+/*
+.div{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    border-radius: 5%;
+    height: 50%;
+    margin-bottom: 3%;
+}
+*/
+.dialog{
+    align-content: space-between;
+    display: flex;
+}
+vaadin-login-form{
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    border-radius: 3%;
+    
+}
+
+.card{
+    overflow:auto;
+}
+
+.accountFont{
+    font-weight: 500;
+    margin-top: 1%;
+}

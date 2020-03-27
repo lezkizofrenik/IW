@@ -1,0 +1,146 @@
+package es.uca.iw;
+
+import com.vaadin.flow.component.html.H1;
+import es.uca.iw.backend.Usuario;
+import es.uca.iw.backend.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.login.AbstractLogin;
+import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Viewport;
+import com.vaadin.flow.router.*;
+
+@HtmlImport("frontend://bower_components/iron-form/iron-form.html") //
+/**
+ * A Designer generated component for the log-in template.
+ *
+ * Designer will add and remove fields with @Id mappings but
+ * does not overwrite or otherwise change this file.
+ */
+@Route("")
+@Tag("login")
+@PageTitle("login")
+@Viewport(ViewPort.VIEWPORT)
+@CssImport("./styles/style.css")
+public class LoginView extends HorizontalLayout {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+	private UsuarioService service;
+	private AuthenticationManager authenticationManager;
+	private LoginForm login;
+
+    /**
+     * Creates a new LogIn.
+     */
+    @Autowired
+    public LoginView(UsuarioService service, AuthenticationManager authenticationManager) {
+        //getContent().getStyle().set("StyleName", "login");
+    	this.service = service;
+        this.authenticationManager = authenticationManager;
+        VerticalLayout v1 = new VerticalLayout();
+        v1.setWidth("50%");
+        v1.setAlignItems(Alignment.CENTER);
+        v1.setClassName("vertical");
+        VerticalLayout v2 = new VerticalLayout();
+        v2.setWidth("50%");
+        v2.setAlignItems(Alignment.CENTER);
+        v2.setClassName("vertical");
+        H1 text = new H1("Costa-Vespertino Cruceros");
+        text.setMaxHeight("65%");
+        Span s1 = new Span("Costa-");
+        Span s2 = new Span("Vespertino");
+        Span s3 = new Span("Cruceros");
+        Image img2 = new Image("https://www.pngrepo.com/png/272288/170/ocean.png", "logo not found");
+        img2.setClassName("imgLogin");
+        v1.add(text,img2);
+        v1.setMargin(true);
+        VerticalLayout v5 = new VerticalLayout();
+        login = new LoginForm();
+        login.setI18n(createSpanishI18n());
+        login.addLoginListener( e->signIn(e));
+        v5.add(login);
+        v5.setClassName("loginForm");
+        v5.setMaxWidth("45%");
+        v2.add(v5);
+        v2.setAlignItems(Alignment.AUTO);
+
+        VerticalLayout v3 = new VerticalLayout();
+        v3.setWidth("50%");
+        v3.setHeight("100%");
+        v3.setAlignItems(Alignment.CENTER);
+        v3.add(v1);
+        v3.setClassName("vertical");
+        VerticalLayout v4 = new VerticalLayout();
+        v4.setAlignItems(Alignment.CENTER);
+        v4.setWidth("50%");
+        v4.setHeight("100%");
+        v4.add(v2);
+        v4.setClassName("vertical");
+        HorizontalLayout h = new HorizontalLayout();
+        h.setSizeFull();
+        h.setClassName("login");
+        h.add(v1,v2);
+        add(h);
+
+    }
+    private void signIn(AbstractLogin.LoginEvent e)
+    {
+        if (authenticate(e.getUsername(), e.getPassword()))
+        {
+        	Usuario user = service.loadUserByUsername(e.getUsername());
+            UI.getCurrent().getSession().setAttribute(Usuario.class, user);
+            if(user.getRole().equals("Admin") || user.getRole().equals("User") || user.getRole().equals("Gerente")){
+            	UI.getCurrent().navigate("mainview");
+                UI.getCurrent().getPage().reload();
+            }
+            
+        } else {
+            login.setError(true);
+        }
+    }
+
+    public boolean authenticate(String username, String password)
+    {
+        try{
+            Authentication token = authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(username,password));
+            SecurityContextHolder.getContext().setAuthentication(token);
+            return true;
+        } catch (AuthenticationException ex) {
+            return false;
+        }
+    
+    }
+    private LoginI18n createSpanishI18n() {
+        final LoginI18n i18n = LoginI18n.createDefault();
+
+        i18n.setHeader(new LoginI18n.Header());
+        i18n.getHeader().setTitle("Costa Vespertino");
+        i18n.getHeader().setDescription("Sistema de reserva de barcos");
+        i18n.getForm().setUsername("Usuario");
+        i18n.getForm().setTitle("Acceda a su cuenta");
+        i18n.getForm().setSubmit("Acceso");
+        i18n.getForm().setPassword("Contraseña");
+        i18n.getForm().setForgotPassword("Olvidé mi contraseña");
+        i18n.getErrorMessage().setTitle("Usuario/Contraseña inválidos");
+        i18n.getErrorMessage()
+            .setMessage("Confirme el usuario.");
+        return i18n;
+    }
+}
